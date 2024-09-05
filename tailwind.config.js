@@ -11,7 +11,7 @@ export default {
         'gradient-5': '#1bbbd2',
       },
       animation: {
-        'gradient-bg': 'gradientBG 5s ease infinite',
+        'gradient-bg': 'gradientBG 15s ease infinite',
       },
       keyframes: {
         gradientBG: {
@@ -21,7 +21,7 @@ export default {
       },
       backgroundImage: {
         'gradient-animation':
-          'linear-gradient(135deg, var(--tw-gradient-stops))',
+          'linear-gradient(135deg, var(--gradient-1), var(--gradient-2), var(--gradient-3), var(--gradient-4), var(--gradient-5))',
       },
     },
   },
