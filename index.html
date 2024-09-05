@@ -3,32 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rolig Namn App</title>
+    <title>Snake Name Game</title>
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
-  <body class="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+  <body
+    class="bg-gradient-animation animate-gradient-bg from-gradient-1 via-gradient-2 via-gradient-3 via-gradient-4 to-gradient-5 flex min-h-screen flex-col items-center justify-center bg-[length:400%_400%] p-4"
+  >
+    <h2 id="header" class="mb-6 text-center text-3xl font-bold text-white">
+      Laboration 1 - Snake Name Game
+    </h2>
     <div
       id="app"
-      class="mx-auto w-full max-w-md rounded-lg bg-white p-6 shadow-md sm:p-8"
+      class="animate-fade-in mx-auto w-full max-w-md rounded-lg bg-white bg-opacity-90 p-6 shadow-lg sm:p-8"
     >
-      <h1 class="mb-4 text-center text-2xl font-bold text-gray-800 sm:text-3xl">
+      <h1
+        id="nameInputField"
+        class="mb-4 text-center text-2xl font-bold text-indigo-800 sm:text-3xl"
+      >
         Skriv ditt namn
       </h1>
       <form id="nameForm" class="space-y-4">
         <input
           type="text"
           id="nameInput"
-          class="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:px-4 sm:py-2 sm:text-base"
+          class="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 sm:px-4 sm:py-2 sm:text-base"
           placeholder="Ditt namn"
           required
         />
         <button
           type="submit"
-          class="w-full rounded-md bg-blue-500 py-2 text-sm text-white transition-colors hover:bg-blue-600 sm:text-base"
+          class="from-gradient-1 via-gradient-2 to-gradient-3 hover:from-gradient-3 hover:via-gradient-4 hover:to-gradient-5 w-full rounded-md bg-gradient-to-r py-2 text-sm text-white transition-all sm:text-base"
         >
           Få en överraskning!
         </button>
       </form>
-      <div id="result" class="mt-6 hidden text-center"></div>
+      <div id="result" class="mt-6 hidden text-center text-indigo-700"></div>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
