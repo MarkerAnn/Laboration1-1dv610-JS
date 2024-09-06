@@ -9,16 +9,20 @@ import './style.css'
 // Take care of the edge cases
 // Handle the last letter
 // Decrease speed?
+// Center GameBoard
+// Delete "Skriv ditt namn"
+// Change 300 to variable for the game board size -> easier to change
 
 // Global variables
 let playerName = ''
-let snake = [{ x: 150, y: 150 }]
+let snake = [{ x: 150, y: 150 }] // Start position for the snake
 let food = {}
-let dx = 10 // Direction x
+let dx = 10 // Direction x, the snake moves 10px at a time at start
 let dy = 0 // Direction y
 let gameLoop
 let gameBoard
 let currentLetterIndex = 0
+let score = 0
 
 // Define the elements
 const nameForm = document.querySelector('#nameForm')
@@ -75,9 +79,8 @@ function createFoodElement(x, y, letter) {
 
 // Create food
 function createFood() {
-  if (currentLetterIndex >= playerName.length) {
-    endGame()
-    return
+  if (currentLetterIndex === playerName.length) {
+    currentLetterIndex = 0
   }
 
   // Food-object, it has 3 properties - position x, position y and the letter
@@ -98,12 +101,19 @@ function createFood() {
 // Move the snake
 function moveSnake() {
   const head = { x: snake[0].x + dx, y: snake[0].y + dy }
+
+  // Check if the snake has hit the border
+  if (checkCollision(head)) {
+    endGame()
+    return
+  }
   // Add the new head to the snake, in the beginning of the array
   snake.unshift(head)
 
   // Check if the snake has eaten the food - if the head is on the same position as the food - if so remove the food, else remove the last element in the snake. This illustrates the snake moving.
   if (head.x === food.x && head.y === food.y) {
     document.querySelector('#food').remove()
+    score++
     createFood()
   } else {
     snake.pop()
@@ -156,4 +166,22 @@ function changeDirection(e) {
     dx = 0
     dy = 10
   }
+}
+
+function checkCollision(head) {
+  // Check if the snake has hit the right or left border
+  if (head.x < 0 || head.x >= 300) {
+    return true
+  }
+  // Check if the snake has hit the top or bottom border
+  if (head.y < 0 || head.y >= 300) {
+    return true
+  }
+  return false
+}
+
+function endGame() {
+  clearInterval(gameLoop)
+  document.removeEventListener('keydown', changeDirection)
+  alert('Game over')
 }
