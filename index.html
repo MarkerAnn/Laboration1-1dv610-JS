@@ -9,12 +9,13 @@
   <body
     class="bg-gradient-animation animate-gradient-bg flex min-h-screen flex-col items-center justify-center bg-[length:400%_400%] p-4"
   >
-    <h2 id="header" class="mb-6 text-center text-3xl font-bold text-white">
-      Laboration 1 - Snake Name Game
-    </h2>
+    <div id="header" class="mb-6 text-center text-3xl font-bold text-white">
+      <h2>Laboration 1</h2>
+      <h2>Snake Name Game</h2>
+    </div>
     <div
       id="app"
-      class="mx-auto w-full max-w-md justify-center rounded-lg bg-white bg-opacity-90 p-6 shadow-lg sm:p-8"
+      class="mx-auto flex w-full max-w-md flex-col items-center justify-center rounded-lg bg-white bg-opacity-90 p-6 shadow-lg sm:p-8"
     >
       <div
         id="gameBoard"
@@ -30,11 +31,11 @@
       </div>
       <h1
         id="nameInputField"
-        class="mb-4 text-center text-2xl font-bold text-indigo-800 sm:text-3xl"
+        class="text-gradient-4 mb-4 text-center text-2xl font-bold sm:text-3xl"
       >
         Skriv ditt namn
       </h1>
-      <form id="nameForm" class="space-y-4">
+      <form id="nameForm" class="w-full space-y-4">
         <input
           type="text"
           id="nameInput"

@@ -6,12 +6,12 @@ import './style.css'
 // CDN safety for input
 // Add a loader
 // Add a reset button
-// Take care of the edge cases
 // Handle the last letter
 // Decrease speed?
 // Center GameBoard
-// Delete "Skriv ditt namn"
 // Change 300 to variable for the game board size -> easier to change
+// Remove alert
+// Food can show up in tail
 
 // Global variables
 let playerName = ''
@@ -53,7 +53,7 @@ function startGame() {
   enterName.classList.add('hidden')
   // Show message about how to play the game
   resultDiv.style.display = 'block'
-  resultDiv.innerHTML = `<p>Hej ${playerName}! Använd piltangenterna för att styra ormen och "äta upp" ditt namn.</p>`
+  resultDiv.innerHTML = `<p>Hej ${playerName}! Använd piltangenterna för att styra ormen och "moffa upp" ditt namn.</p>`
 
   updateScore()
 
@@ -108,7 +108,7 @@ function createFood() {
 function moveSnake() {
   const head = { x: snake[0].x + dx, y: snake[0].y + dy }
 
-  // Check if the snake has hit the border
+  // Check if the snake has hit the border, or itself
   if (checkCollision(head)) {
     endGame()
     return
@@ -192,6 +192,14 @@ function checkCollision(head) {
   if (head.y < 0 || head.y >= 300) {
     return true
   }
+
+  // Check if the snake has hit itself
+  for (let i = 1; i < snake.length; i++) {
+    if (head.x === snake[i].x && head.y === snake[i].y) {
+      return true
+    }
+  }
+
   return false
 }
 
