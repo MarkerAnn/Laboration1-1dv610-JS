@@ -46,7 +46,7 @@ function sanitizeInput(input) {
 // Modify your form submission event listener
 nameForm.addEventListener('submit', (e) => {
   e.preventDefault()
-  let playerName = nameInput.value.trim() // Trim whitespace
+  playerName = nameInput.value.trim() // Trim whitespace
   playerName = sanitizeInput(playerName) // Sanitize input
 
   if (playerName && playerName.length <= 20) {
@@ -123,7 +123,6 @@ function createFood() {
   const foodElement = createFoodElement(food.x, food.y, food.letter)
   gameBoard.appendChild(foodElement)
 
-  // Decrease the currentLetterIndex, to get the next letter in the playerName
   currentLetterIndex++
 }
 
@@ -171,7 +170,7 @@ function updateGameBoard() {
     gameBoard.appendChild(snakeElement)
   })
 
-  // Draw the food
+  // Draw the food (letter)
   const foodElement = createFoodElement(food.x, food.y, food.letter)
   gameBoard.appendChild(foodElement)
 }
