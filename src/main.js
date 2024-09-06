@@ -6,7 +6,6 @@ import './style.css'
 // CDN safety for input
 // Add a loader
 // Add a reset button
-// Handle the last letter
 // Decrease speed?
 // Center GameBoard
 // Change 300 to variable for the game board size -> easier to change
@@ -35,6 +34,7 @@ gameBoard = document.querySelector('#gameBoard')
 const scoreBoard = document.querySelector('#scoreBoard')
 const currentScoreElement = document.querySelector('#currentScore')
 const highScoreElement = document.querySelector('#highScore')
+const appDiv = document.querySelector('#app')
 
 // Add event listener to the form
 nameForm.addEventListener('submit', (e) => {
@@ -152,7 +152,7 @@ function updateGameBoard() {
   // Draw the snake
   snake.forEach((segment) => {
     const snakeElement = document.createElement('div')
-    snakeElement.className = 'absolute w-2.5 h-2.5 bg-green-500'
+    snakeElement.className = 'absolute w-2.5 h-2.5 bg-gradient-2'
     snakeElement.style.left = `${segment.x}px`
     snakeElement.style.top = `${segment.y}px`
     gameBoard.appendChild(snakeElement)
@@ -224,7 +224,52 @@ function checkCollision(head) {
 function endGame() {
   clearInterval(gameLoop)
   document.removeEventListener('keydown', changeDirection)
-  alert('Game over')
+
+  showGameOverMessage()
+
+  // Show name input form again
+  // nameForm.classList.remove('hidden')
+  // gameBoard.classList.add('hidden')
+  // scoreBoard.classList.add('hidden')
+  // resultDiv.style.display = 'none'
+  // enterName.classList.remove('hidden')
+}
+
+// ************************* Show Game Over Message *************************
+function showGameOverMessage() {
+  const gameOverDiv = document.createElement('div')
+  gameOverDiv.className = 'absolute inset-0 flex items-center justify-center'
+
+  const messageContainer = document.createElement('div')
+  messageContainer.className =
+    'w-full h-full bg-custom-gradient flex flex-col items-center justify-center text-center'
+
+  const gameOverTitle = document.createElement('h2')
+  gameOverTitle.className = 'text-6xl font-bold text-white mb-6 font-viaoda'
+  gameOverTitle.textContent = 'GAME OVER'
+
+  const scoreMessage = document.createElement('p')
+  scoreMessage.className = 'text-2xl text-white mb-6 font-viaoda'
+  scoreMessage.textContent = `Din poäng: ${score}`
+
+  const playAgainBtn = document.createElement('button')
+  playAgainBtn.className =
+    'px-6 py-3 bg-white text-gradient-1 rounded-full hover:bg-gradient-5 hover:text-white transition-colors duration-300 text-xl font-viaoda shadow-md hover:shadow-lg transform hover:scale-105 transition-transform'
+  playAgainBtn.textContent = 'Spela igen'
+  playAgainBtn.addEventListener('click', restartGame)
+
+  messageContainer.appendChild(gameOverTitle)
+  messageContainer.appendChild(scoreMessage)
+  messageContainer.appendChild(playAgainBtn)
+  gameOverDiv.appendChild(messageContainer)
+
+  gameBoard.appendChild(gameOverDiv)
+}
+
+// ************************* Restart the game *************************
+function restartGame() {
+  // Clear the game board
+  gameBoard.innerHTML = ''
 
   // Reset game state
   snake = [{ x: 150, y: 150 }]
@@ -233,10 +278,6 @@ function endGame() {
   score = 0
   currentLetterIndex = 0
 
-  // Show name input form again
-  nameForm.classList.remove('hidden')
-  gameBoard.classList.add('hidden')
-  scoreBoard.classList.add('hidden')
-  resultDiv.style.display = 'none'
-  enterName.classList.remove('hidden')
+  // Start the game again
+  startGame()
 }

@@ -22,6 +22,11 @@ export default {
       backgroundImage: {
         'gradient-animation':
           'linear-gradient(135deg, var(--gradient-1), var(--gradient-2), var(--gradient-3), var(--gradient-4), var(--gradient-5))',
+        'custom-gradient':
+          'linear-gradient(90deg, #3a4fd6, #ce4db6, #ae93f0, #1289cd, #1bbbd2)',
+      },
+      fontFamily: {
+        viaoda: ['"Viaoda Libre"', 'serif'], // Lägg till din Google Font här
       },
     },
   },
