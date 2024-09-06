@@ -28,6 +28,10 @@ export default {
       fontFamily: {
         viaoda: ['"Viaoda Libre"', 'serif'], // Lägg till din Google Font här
       },
+      boxShadow: {
+        'game-over':
+          '0 0 0 10px rgba(255, 255, 255, 0.8), 0 0 15px 15px rgba(255, 255, 255, 0.6)',
+      },
     },
   },
   plugins: [],

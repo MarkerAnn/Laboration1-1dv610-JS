@@ -4,20 +4,22 @@ import './style.css'
 // Show the result
 // Error handling
 // CDN safety for input
-// Add a loader
-// Add a reset button
 // Decrease speed?
-// Center GameBoard
 // Change 300 to variable for the game board size -> easier to change
-// Remove alert
-// Food can show up in tail
+// Delete unused code
+// Make the game board size dynamic or at least bigger
+
+// Define constants
+const GRID_SIZE = 20 // each square is 20x20 pixels
+const GAME_SIZE = 400
+const GRID_WIDTH = GAME_SIZE / GRID_SIZE // 400 / 20 = 20 squares
 
 // Global variables
 let playerName = ''
-let snake = [{ x: 150, y: 150 }] // Start position for the snake
+let snake = [{ x: 10, y: 10 }] // Start position for the snake
 let food = {}
-let dx = 10 // Direction x, the snake moves 10px at a time at start
-let dy = 0 // Direction y
+let dx = 1 // Direction x, (1 = right, -1 = left)
+let dy = 0 // Direction y (1 = down, -1 = up)
 let gameLoop
 let gameBoard
 let currentLetterIndex = 0
@@ -34,14 +36,24 @@ gameBoard = document.querySelector('#gameBoard')
 const scoreBoard = document.querySelector('#scoreBoard')
 const currentScoreElement = document.querySelector('#currentScore')
 const highScoreElement = document.querySelector('#highScore')
-const appDiv = document.querySelector('#app')
 
-// Add event listener to the form
+// Add this function to sanitize the input
+function sanitizeInput(input) {
+  // Remove any characters that aren't letters, spaces, or accented characters
+  return input.replace(/[^A-Za-zÀ-ÿ\s]/g, '')
+}
+
+// Modify your form submission event listener
 nameForm.addEventListener('submit', (e) => {
   e.preventDefault()
-  playerName = nameInput.value.trim()
-  if (playerName) {
+  let playerName = nameInput.value.trim() // Trim whitespace
+  playerName = sanitizeInput(playerName) // Sanitize input
+
+  if (playerName && playerName.length <= 20) {
+    // Check length again
     startGame()
+  } else {
+    alert('Ange ett giltigt namn, max 20 bokstäver')
   }
 })
 
@@ -77,14 +89,16 @@ function createFoodElement(x, y, letter) {
 
   // Add class to the food-element
   foodElement.className =
-    'absolute w-2.5 h-2.5 bg-red-500 flex items-center justify-center text-white text-xs'
+    'absolute bg-red-500 flex items-center justify-center text-white font-bold text-base'
 
-  // Set position with style (Tailwind does not support exact pixel values)
-  foodElement.style.left = `${food.x}px`
-  foodElement.style.top = `${food.y}px`
+  // Set size and position with style (Tailwind does not support exact pixel values)
+  foodElement.style.width = `${GRID_SIZE}px`
+  foodElement.style.height = `${GRID_SIZE}px`
+  foodElement.style.left = `${x * GRID_SIZE}px`
+  foodElement.style.top = `${y * GRID_SIZE}px`
 
   // Add the letter to the food-element
-  foodElement.textContent = food.letter
+  foodElement.textContent = letter
 
   // Add Id to the food-element
   foodElement.id = 'food'
@@ -98,18 +112,12 @@ function createFood() {
   }
 
   do {
-    newFoodPosition = {
-      x: Math.floor(Math.random() * 30) * 10,
-      y: Math.floor(Math.random() * 30) * 10,
+    food = {
+      x: Math.floor(Math.random() * GRID_WIDTH),
+      y: Math.floor(Math.random() * GRID_WIDTH),
+      letter: playerName[currentLetterIndex],
     }
-  } while (isOverlappingSnake(newFoodPosition))
-
-  // Food-object, it has 3 properties - position x, position y and the letter
-  food = {
-    x: newFoodPosition.x,
-    y: newFoodPosition.y,
-    letter: playerName[currentLetterIndex],
-  }
+  } while (isOverlappingSnake(food))
 
   // Create the food element and append it to the game board
   const foodElement = createFoodElement(food.x, food.y, food.letter)
@@ -121,13 +129,16 @@ function createFood() {
 
 // ************************* Move the snake *************************
 function moveSnake() {
-  const head = { x: snake[0].x + dx, y: snake[0].y + dy }
+  const head = {
+    x: snake[0].x + dx,
+    y: snake[0].y + dy,
+  }
 
-  // Check if the snake has hit the border, or itself
   if (checkCollision(head)) {
     endGame()
     return
   }
+
   // Add the new head to the snake, in the beginning of the array
   snake.unshift(head)
 
@@ -152,9 +163,11 @@ function updateGameBoard() {
   // Draw the snake
   snake.forEach((segment) => {
     const snakeElement = document.createElement('div')
-    snakeElement.className = 'absolute w-2.5 h-2.5 bg-gradient-2'
-    snakeElement.style.left = `${segment.x}px`
-    snakeElement.style.top = `${segment.y}px`
+    snakeElement.className = 'absolute bg-gradient-2'
+    snakeElement.style.width = `${GRID_SIZE}px`
+    snakeElement.style.height = `${GRID_SIZE}px`
+    snakeElement.style.left = `${segment.x * GRID_SIZE}px`
+    snakeElement.style.top = `${segment.y * GRID_SIZE}px`
     gameBoard.appendChild(snakeElement)
   })
 
@@ -182,42 +195,40 @@ function changeDirection(e) {
   const keyPressed = e.keyCode
 
   if (keyPressed === LEFT_KEY && dx === 0) {
-    dx = -10
+    dx = -1
     dy = 0
   }
   if (keyPressed === UP_KEY && dy === 0) {
     dx = 0
-    dy = -10
+    dy = -1
   }
   if (keyPressed === RIGHT_KEY && dx === 0) {
-    dx = 10
+    dx = 1
     dy = 0
   }
   if (keyPressed === DOWN_KEY && dy === 0) {
     dx = 0
-    dy = 10
+    dy = 1
   }
 }
 
 // ************************* Check if the snake has hit something *************************
 function checkCollision(head) {
-  // Check if the snake has hit the right or left border
-  if (head.x < 0 || head.x >= 300) {
-    return true
-  }
-  // Check if the snake has hit the top or bottom border
-  if (head.y < 0 || head.y >= 300) {
+  // Check if the snake has hit the border
+  if (
+    head.x < 0 ||
+    head.x >= GRID_WIDTH ||
+    head.y < 0 ||
+    head.y >= GRID_WIDTH
+  ) {
     return true
   }
 
   // Check if the snake has hit itself
-  for (let i = 1; i < snake.length; i++) {
-    if (head.x === snake[i].x && head.y === snake[i].y) {
-      return true
-    }
-  }
-
-  return false
+  return snake.some((segment, index) => {
+    if (index === 0) return false // Ignore the head
+    return segment.x === head.x && segment.y === head.y
+  })
 }
 
 // ************************* End the game *************************
@@ -238,7 +249,8 @@ function endGame() {
 // ************************* Show Game Over Message *************************
 function showGameOverMessage() {
   const gameOverDiv = document.createElement('div')
-  gameOverDiv.className = 'absolute inset-0 flex items-center justify-center'
+  gameOverDiv.className =
+    'absolute inset-0 flex items-center justify-center shadow-game-over'
 
   const messageContainer = document.createElement('div')
   messageContainer.className =
@@ -272,8 +284,8 @@ function restartGame() {
   gameBoard.innerHTML = ''
 
   // Reset game state
-  snake = [{ x: 150, y: 150 }]
-  dx = 10
+  snake = [{ x: 10, y: 10 }]
+  dx = 1
   dy = 0
   score = 0
   currentLetterIndex = 0
