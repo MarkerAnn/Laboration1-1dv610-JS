@@ -23,13 +23,18 @@ let gameLoop
 let gameBoard
 let currentLetterIndex = 0
 let score = 0
+let highScore = 0
 
 // Define the elements
 const nameForm = document.querySelector('#nameForm')
 const nameInput = document.querySelector('#nameInput')
 const resultDiv = document.querySelector('#result')
+const enterName = document.querySelector('#nameInputField')
 const appDiv = document.querySelector('#app')
 gameBoard = document.querySelector('#gameBoard')
+const scoreBoard = document.querySelector('#scoreBoard')
+const currentScoreElement = document.querySelector('#currentScore')
+const highScoreElement = document.querySelector('#highScore')
 
 // Add event listener to the form
 nameForm.addEventListener('submit', (e) => {
@@ -44,12 +49,13 @@ nameForm.addEventListener('submit', (e) => {
 function startGame() {
   nameForm.classList.add('hidden')
   gameBoard.classList.remove('hidden')
-
+  scoreBoard.classList.remove('hidden')
+  enterName.classList.add('hidden')
   // Show message about how to play the game
-  const message = document.createElement('p')
-  message.textConetn = `Hej ${playerName}! Använd piltangenterna för att styra ormen.`
-  resultDiv.innerHTML = ''
-  resultDiv.appendChild(message)
+  resultDiv.style.display = 'block'
+  resultDiv.innerHTML = `<p>Hej ${playerName}! Använd piltangenterna för att styra ormen och "äta upp" ditt namn.</p>`
+
+  updateScore()
 
   createFood()
   // Set how often the snake should move
@@ -114,6 +120,7 @@ function moveSnake() {
   if (head.x === food.x && head.y === food.y) {
     document.querySelector('#food').remove()
     score++
+    updateScore()
     createFood()
   } else {
     snake.pop()
@@ -139,6 +146,14 @@ function updateGameBoard() {
   // Draw the food
   const foodElement = createFoodElement(food.x, food.y, food.letter)
   gameBoard.appendChild(foodElement)
+}
+
+function updateScore() {
+  currentScoreElement.textContent = `Poäng: ${score}`
+  if (score > highScore) {
+    highScore = score
+    highScoreElement.textContent = `Highscore: ${highScore}`
+  }
 }
 
 // Change direction on the snake
@@ -184,4 +199,18 @@ function endGame() {
   clearInterval(gameLoop)
   document.removeEventListener('keydown', changeDirection)
   alert('Game over')
+
+  // Reset game state
+  snake = [{ x: 150, y: 150 }]
+  dx = 10
+  dy = 0
+  score = 0
+  currentLetterIndex = 0
+
+  // Show name input form again
+  nameForm.classList.remove('hidden')
+  gameBoard.classList.add('hidden')
+  scoreBoard.classList.add('hidden')
+  resultDiv.style.display = 'none'
+  enterName.classList.remove('hidden')
 }
