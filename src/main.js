@@ -24,13 +24,13 @@ let gameBoard
 let currentLetterIndex = 0
 let score = 0
 let highScore = 0
+let newFoodPosition
 
 // Define the elements
 const nameForm = document.querySelector('#nameForm')
 const nameInput = document.querySelector('#nameInput')
 const resultDiv = document.querySelector('#result')
 const enterName = document.querySelector('#nameInputField')
-const appDiv = document.querySelector('#app')
 gameBoard = document.querySelector('#gameBoard')
 const scoreBoard = document.querySelector('#scoreBoard')
 const currentScoreElement = document.querySelector('#currentScore')
@@ -45,7 +45,7 @@ nameForm.addEventListener('submit', (e) => {
   }
 })
 
-// Start the game
+// ************************* Start the game *************************
 function startGame() {
   nameForm.classList.add('hidden')
   gameBoard.classList.remove('hidden')
@@ -63,6 +63,14 @@ function startGame() {
   document.addEventListener('keydown', changeDirection)
 }
 
+// ************************* Check if the food is overlapping the snake *************************
+function isOverlappingSnake(position) {
+  return snake.some(
+    (segment) => segment.x === position.x && segment.y === position.y
+  )
+}
+
+// ************************* Create the food-element *************************
 function createFoodElement(x, y, letter) {
   // Create a div-element for the food
   const foodElement = document.createElement('div')
@@ -83,16 +91,23 @@ function createFoodElement(x, y, letter) {
   return foodElement
 }
 
-// Create food
+// ************************* Append the food-element to the game board *************************
 function createFood() {
   if (currentLetterIndex === playerName.length) {
     currentLetterIndex = 0
   }
 
+  do {
+    newFoodPosition = {
+      x: Math.floor(Math.random() * 30) * 10,
+      y: Math.floor(Math.random() * 30) * 10,
+    }
+  } while (isOverlappingSnake(newFoodPosition))
+
   // Food-object, it has 3 properties - position x, position y and the letter
   food = {
-    x: Math.floor(Math.random() * 30) * 10,
-    y: Math.floor(Math.random() * 30) * 10,
+    x: newFoodPosition.x,
+    y: newFoodPosition.y,
     letter: playerName[currentLetterIndex],
   }
 
@@ -104,7 +119,7 @@ function createFood() {
   currentLetterIndex++
 }
 
-// Move the snake
+// ************************* Move the snake *************************
 function moveSnake() {
   const head = { x: snake[0].x + dx, y: snake[0].y + dy }
 
@@ -129,7 +144,7 @@ function moveSnake() {
   updateGameBoard()
 }
 
-// Update the game board
+// ************************* Update the game board - Draw the snake and food *************************
 function updateGameBoard() {
   // Clear the game board
   gameBoard.innerHTML = ''
@@ -148,6 +163,7 @@ function updateGameBoard() {
   gameBoard.appendChild(foodElement)
 }
 
+// ************************* Update the score *************************
 function updateScore() {
   currentScoreElement.textContent = `Poäng: ${score}`
   if (score > highScore) {
@@ -156,7 +172,7 @@ function updateScore() {
   }
 }
 
-// Change direction on the snake
+// ************************* Change direction *************************
 function changeDirection(e) {
   const LEFT_KEY = 37
   const RIGHT_KEY = 39
@@ -183,6 +199,7 @@ function changeDirection(e) {
   }
 }
 
+// ************************* Check if the snake has hit something *************************
 function checkCollision(head) {
   // Check if the snake has hit the right or left border
   if (head.x < 0 || head.x >= 300) {
@@ -203,6 +220,7 @@ function checkCollision(head) {
   return false
 }
 
+// ************************* End the game *************************
 function endGame() {
   clearInterval(gameLoop)
   document.removeEventListener('keydown', changeDirection)
